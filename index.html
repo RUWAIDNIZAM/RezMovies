@@ -109,6 +109,7 @@
       .splash{ position:fixed; inset:0; background:radial-gradient(1200px 800px at 50% 30%, #181824 0%, #0b0b0f 60%); display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:60; color:#fff; padding:0 16px; }
       .splash .logo{ font:700 clamp(28px,6vw,42px)/1 var(--font); text-align:center; }
       .splash .made{ margin-top:10px; font:300 14px/1 var(--font); color:#cfcfe6; }
+      .splash .disclaimer { margin-top:14px; font-size:12px; font-weight:300; max-width: 320px; text-align: center; color: #a9a9b9; line-height: 1.5; }
       .splash .hint{ margin-top:18px; font:300 12px/1 var(--font); color:#b7b8c6; text-align:center; }
       .splash.fade{ animation: fadeOut .6s ease forwards; }
       @keyframes fadeOut { to { opacity:0; visibility:hidden; } }
@@ -134,6 +135,7 @@
     <div class="splash" id="splash">
       <div class="logo">Rez Flix</div>
       <div class="made">Made by RuwaidCool</div>
+      <div class="disclaimer">This website doesn't endorse any piracy as it relies on Telegram servers and is completely legal to watch.</div>
       <div class="hint">Tap anywhere to continue</div>
     </div>
 
@@ -165,7 +167,6 @@
           <option value="az">Sort: A-Z</option>
           <option value="za">Sort: Z-A</option>
           <option value="new">Sort: Newest</option>
-          <option value="res">Sort: Resolution</option>
         </select>
       </div>
     </header>
@@ -298,10 +299,6 @@
         const nowDownload = document.getElementById('nowDownload');
 
         function playSource(item) {
-          if (item.src.toLowerCase().endsWith('.mkv')) {
-            window.location.href = 'vlc://' + item.src;
-            return;
-          }
           plyr.source = { type: 'video', sources: [{ src: item.src, type: 'video/mp4' }] };
           nowTitle.textContent = `${item.name} • ${item.resolution}`;
           nowDownload.href = item.src;
@@ -389,7 +386,7 @@
           const mode = sortSel.value;
           if (mode === 'az') working.sort((a, b) => a.name.localeCompare(b.name));
           else if (mode === 'za') working.sort((a, b) => b.name.localeCompare(a.name));
-          else if (mode === 'new') working = [...base].reverse();
+          else if (mode === 'new') working = [...base];
         }
 
         function refresh() {
@@ -403,7 +400,6 @@
           playerHead.style.display = 'none';
           try { plyr.stop(); } catch (e) {}
         }
-
         refresh();
         searchBox.addEventListener('input', refresh);
         sortSel.addEventListener('change', refresh);
