@@ -5,190 +5,583 @@
 <title>rezFlix by ruwaid cool</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
 <style>
-:root{
+:root {
   --font: "Space Grotesk", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  --bg:#0b0b0f; --panel:#111218; --panel2:#151622; --card:#171828;
-  --text:#f2f3f7; --muted:#b7b8c6; --brand:#ef5466; --ok:#0ea5e9;
+  --bg: #0b0b0f; --card: #171828;
+  --text: #f2f3f7; --muted: #b7b8c6; --brand: #ef5466; --ok: #0ea5e9;
 }
-*{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-html,body{ height:100%; }
-body{ margin:0; background:var(--bg); color:var(--text); font-family:var(--font); }
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  display: flex;
+  flex-direction: column;
+}
 
-/* Splash */
-.splash{ position:fixed; inset:0; background:radial-gradient(1200px 800px at 50% 30%, #181824 0%, #0b0b0f 60%); display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:60; color:#fff; padding:0 16px; }
-.splash.fade{ animation: fadeOut .6s ease forwards; }
-@keyframes fadeOut { to { opacity:0; visibility:hidden; } }
-.splash .logo{ font:700 clamp(28px,6vw,42px)/1 var(--font); text-align:center; }
-.splash .made{ margin-top:10px; font:300 14px/1 var(--font); color:#cfcfe6; }
-.splash .disclaimer { margin-top:14px; font-size:12px; font-weight:300; max-width: 320px; text-align: center; color: #a9a9b9; line-height: 1.5; }
-.splash .hint{ margin-top:18px; font:300 12px/1 var(--font); color:#b7b8c6; text-align:center; }
+/* Splash and gate overlays */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(1200px 800px at 50% 30%, #181824 0%, #0b0b0f 60%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  color: #fff;
+  padding: 0 16px;
+}
 
-/* Gate */
-.gate{ position:fixed; inset:0; background:rgba(0,0,0,.75); display:none; align-items:center; justify-content:center; z-index:55; padding:16px; }
-.gate.show{ display:flex; }
-.gate-card{ width:min(520px, 100%); background:#0f1017; border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:18px; box-shadow:0 20px 60px rgba(0,0,0,.55); }
-.gate-title{ font:700 18px/1.2 var(--font); margin-bottom:8px; }
-.gate-desc{ font:300 13px/1.4 var(--font); color:#cfcfe6; margin-bottom:12px; }
-.gate-row{ display:flex; gap:8px; }
-.gate-row input{ flex:1; background:#121323; color:#fff; border:1px solid rgba(255,255,255,.12); padding:12px 12px; border-radius:12px; font:500 16px/1 var(--font); }
-.gate-row button{ background:var(--ok); color:#001018; border:none; padding:12px 14px; border-radius:12px; font:700 14px/1 var(--font); cursor:pointer; }
-.gate-err{ color:#ffb4b4; font:600 12px/1 var(--font); margin-top:10px; min-height:14px; }
+.overlay.hidden {
+  display: none;
+}
 
-/* Header */
-header{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;position:sticky;top:0;z-index:20;background:rgba(11,11,15,.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06);}
-.brand{display:flex;flex-direction:column;gap:2px;min-width:0;}
-.title{font-weight:700;font-size:16px;}
-.sub{font-weight:300;font-size:11px;color:var(--muted);}
-.search{flex:1;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 12px;max-width:680px;}
-.search input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font:400 14px/1 var(--font);min-width:0;}
+.logo {
+  font-weight: 700;
+  font-size: clamp(28px, 6vw, 42px);
+  text-align: center;
+}
 
-.wrap{padding:10px 12px;}
-.row{margin-top:8px;}
-.row-title{margin:12px 2px 10px;font-size:16px;font-weight:700;}
-.scroller{display:grid;grid-auto-flow:column;grid-auto-columns:min(60vw,220px);gap:10px;overflow-x:auto;padding-bottom:6px;}
-.tcard{border-radius:12px;background:var(--card);box-shadow:0 0 0 1px rgba(255,255,255,.06) inset;padding:10px 14px;font-weight:600;cursor:pointer;}
-.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
-@media(min-width:600px){.cards{grid-template-columns:repeat(3,minmax(0,1fr));}}
-.card{border-radius:12px;background:var(--card);box-shadow:0 0 0 1px rgba(255,255,255,.06) inset;padding:10px 18px;font-size:15px;font-weight:700;cursor:pointer;}
-.card:active{transform:scale(.98);}
-.player{position:relative;background:#000;border-radius:14px;overflow:hidden;}
-#player{width:100%;height:56vh;}
-video{width:100%;height:100%;object-fit:contain;background:#000;}
-.empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#cfcfe6;font:600 14px/1 var(--font);padding:0 16px;}
+.made {
+  margin-top: 10px;
+  font-weight: 300;
+  font-size: 14px;
+  color: #cfcfe6;
+}
+
+.disclaimer {
+  margin-top: 14px;
+  font-size: 12px;
+  font-weight: 300;
+  max-width: 320px;
+  text-align: center;
+  color: #a9a9b9;
+  line-height: 1.5;
+}
+
+.hint {
+  margin-top: 18px;
+  font-weight: 300;
+  font-size: 12px;
+  color: #b7b8c6;
+  text-align: center;
+}
+
+.gate-card {
+  max-width: 400px;
+  width: 90%;
+  background: #0f1017;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+  text-align: center;
+}
+
+.gate-title {
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.gate-desc {
+  font-weight: 300;
+  font-size: 14px;
+  color: #cfcfe6;
+  margin-bottom: 16px;
+}
+
+.gate-row {
+  display: flex;
+  gap: 8px;
+}
+
+.gate-row input {
+  flex: 1;
+  background: #121323;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  font-size: 16px;
+  padding: 12px;
+  outline: none;
+}
+
+.gate-row button {
+  background: var(--ok);
+  border: none;
+  border-radius: 12px;
+  color: #001018;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 12px 16px;
+}
+
+.gate-err {
+  color: #ffb4b4;
+  margin-top: 10px;
+  min-height: 14px;
+  font-weight: 600;
+}
+
+/* Header layout */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(11, 11, 15, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 12px 14px calc(10px + env(safe-area-inset-top));
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand {
+  text-align: center;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.sub {
+  font-weight: 300;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.search {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.search input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 14px;
+}
+
+/* Main content area */
+#mainWrap {
+  margin: calc(56px + env(safe-area-inset-top)) auto 160px auto;
+  max-width: 680px;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px 12px;
+}
+
+.row-title {
+  margin: 12px 0 10px 4px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.scroller {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(60vw, 220px);
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.tcard {
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+@media (min-width: 600px) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.card {
+  border-radius: 12px;
+  background: var(--card);
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+/* Player fixed at bottom */
+#playerWrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 160px;
+  background: black;
+  z-index: 101;
+  border-radius: 0;
+}
+
+#player {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Empty state text */
+#emptyState {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cfcfe6;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  #playerWrap {
+    height: 140px;
+  }
+}
+
+/* Credits overlay */
+.credit-overlay {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  backdrop-filter: blur(12px) brightness(0.7);
+  background: rgba(10, 18, 34, 0.58);
+  align-items: center;
+  justify-content: center;
+}
+
+.credit-content {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 2em;
+  box-shadow: 0 18px 90px 0 rgba(0, 0, 0, 0.25);
+  border: 1.5px solid rgba(64, 80, 160, 0.085);
+  padding: 2.7em 3.3em;
+  position: relative;
+  backdrop-filter: blur(24px) brightness(1.24);
+  overflow: hidden;
+  text-align: center;
+  color: #eaf0ff;
+  font-size: 1.6em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-shadow: 0 7px 20px #0193fa12;
+}
 </style>
 </head>
 
 <body>
-<div class="splash" id="splash">
-  <div class="logo">Rez Flix</div>
-  <div class="made">Made by RuwaidCool</div>
-  <div class="disclaimer">This website doesn't endorse any piracy as it relies on Telegram servers and is completely legal to watch.</div>
-  <div class="hint">Tap anywhere to continue</div>
-</div>
-
-<div class="gate" id="gate">
-  <div class="gate-card">
-    <div class="gate-title">Enter Ruwaid's Invite Code</div>
-    <div class="gate-desc">Access is private. Enter one of the valid invite codes to continue.</div>
-    <div class="gate-row">
-      <input id="gateInput" type="password" placeholder="Invite code..." inputmode="text" autocomplete="off" />
-      <button id="gateBtn">Unlock</button>
+  <div id="splash" class="overlay">
+    <div class="logo">Rez Flix</div>
+    <div class="made">Made by RuwaidCool</div>
+    <div class="disclaimer">
+      This website doesn't endorse any piracy as it relies on Telegram servers and is completely legal to watch.
     </div>
-    <div class="gate-err" id="gateErr"></div>
+    <div class="hint">Tap anywhere to continue</div>
   </div>
-</div>
 
-<header>
-  <div class="brand"><div class="title">rezFlix</div><div class="sub">by ruwaid cool</div></div>
-  <div class="search"><input id="searchBox" type="text" placeholder="Search movies..." /></div>
-</header>
+  <div id="gate" class="overlay hidden">
+    <div class="gate-card">
+      <div class="gate-title">Enter Ruwaid's Invite Code</div>
+      <div class="gate-desc">Access is private. Enter a valid invite code to continue.</div>
+      <div class="gate-row">
+        <input id="gateInput" type="password" placeholder="Invite code..." autocomplete="off" />
+        <button id="gateBtn">Unlock</button>
+      </div>
+      <div id="gateErr" class="gate-err"></div>
+    </div>
+  </div>
 
-<div class="wrap" id="mainWrap">
-  <section class="row">
-    <div class="row-title">Top 5</div>
-    <div class="scroller" id="top5"></div>
-  </section>
-  <div class="player" id="playerWrap">
+  <header>
+    <div class="brand">
+      <div class="title">rezFlix</div>
+      <div class="sub">by ruwaid cool</div>
+    </div>
+    <div class="search">
+      <input id="searchBox" type="text" placeholder="Search movies..." autocomplete="off" />
+    </div>
+  </header>
+
+  <div id="mainWrap" class="wrap" style="display: none;">
+    <section class="row">
+      <div class="row-title">Top 5</div>
+      <div id="top5" class="scroller"></div>
+    </section>
+
+    <section class="rows">
+      <div class="row-title">Full Library</div>
+      <div id="cards" class="cards"></div>
+    </section>
+  </div>
+
+  <div id="playerWrap" class="player">
     <video id="player" playsinline controls></video>
-    <div class="empty" id="emptyState">Select a movie to play</div>
+    <div id="emptyState">Select a movie to play</div>
   </div>
-  <section class="rows">
-    <div class="row-title">Full Library</div>
-    <div class="cards" id="cards"></div>
-  </section>
-</div>
 
-<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', ()=>{
-  const splash=document.getElementById('splash');
-  const gate=document.getElementById('gate');
-  const mainWrap=document.getElementById('mainWrap');
-  const validCodes=new Set(["ruwaidcool","ruwaidnotcool","ruwaidverycool"]);
-  const plyr=new Plyr('#player');
-  const emptyState=document.getElementById('emptyState');
-  const gateInput=document.getElementById('gateInput');
-  const gateBtn=document.getElementById('gateBtn');
-  const gateErr=document.getElementById('gateErr');
-  const top5=document.getElementById('top5');
-  const cards=document.getElementById('cards');
-  const searchBox=document.getElementById('searchBox');
+  <div id="creditOverlay" class="credit-overlay" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+    <div class="credit-content">
+      Ad-free private movie streaming site<br />© ruwaidcool
+    </div>
+  </div>
 
-  splash.addEventListener('click',()=>{splash.classList.add('fade');setTimeout(()=>gate.classList.add('show'),350);});
-  setTimeout(()=>splash.classList.add('fade'),1800);
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const splash = document.getElementById("splash");
+      const gate = document.getElementById("gate");
+      const mainWrap = document.getElementById("mainWrap");
+      const validCodes = new Set([
+        "ruwaidcool",
+        "ruwaidnotcool",
+        "ruwaidverycool",
+      ]);
+      const plyr = new Plyr("#player");
+      const emptyState = document.getElementById("emptyState");
+      const gateInput = document.getElementById("gateInput");
+      const gateBtn = document.getElementById("gateBtn");
+      const gateErr = document.getElementById("gateErr");
+      const top5 = document.getElementById("top5");
+      const cards = document.getElementById("cards");
+      const searchBox = document.getElementById("searchBox");
 
-  gateBtn.addEventListener('click',tryUnlock);
-  gateInput.addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock();});
-  function tryUnlock(){
-    const code=(gateInput.value||'').trim();
-    if(validCodes.has(code)){
-      gate.classList.remove('show');
-      mainWrap.classList.add('unlocked');
-    }else gateErr.textContent="Invalid invite code.";
-  }
+      splash.addEventListener("click", () => {
+        splash.classList.add("fade");
+        setTimeout(() => gate.classList.add("show"), 350);
+      });
+      setTimeout(() => splash.classList.add("fade"), 1800);
 
-  const base=[
-    {name:"The Smile Man (2024)",resolution:"1080p",src:"https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f8fdabe33b661f355258e9/The%20Smile%20Man%202024%20Tamil%20TRUE%20WEB-DL%20-%201080p%20-%20AVC%20-%20DD%2B5.1%20.mkv"},
-    {name:"Kannagi (2023)",resolution:"1080p",src:"https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f8fefbe33b661f355258ec/%5BKC%5D%20Kannagi%202023%201080p%20AMZN%20WEB%20DL%20HEVC%20DDP5%201%20640k-DDH.mkv"},
-    {name:"The Killer (2023)",resolution:"1080p",src:"https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f90191e33b661f355258ee/%40WITHa4.The.Killer.2023.1080p.mWa4.x264.NF.WEBRip.1400MB.DDP.mkv"},
-    {name:"Por Thozhil (2023)",resolution:"1080p",src:"https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f901cfe33b661f355258ef/Por.Thozhil.2023.Tamil.1080p.10bit.SONY.2CH.HEVC.ESub-ALB.mkv"},
-    {name:"Ponman (2025)",resolution:"1080p",src:"https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f902d7e33b661f355258f1/Ponman%202025%20Tamil%20HQ%20HDRip%20-%201080p%20-%20HEVC%20-%20DD%2B5.1%20-%20192Kbps.mkv"},
-    {name:"Diary (2022)",resolution:"1080p",src:"https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f8fc6ee33b661f355258e3/Diary.2022.Tamil.1080p.10bit.AHA.6CH.Esub-ALB.mkv"},
-    {name:"Thegidi (2014)",resolution:"1080p",src:"https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f8fce8e33b661f355258e6/%5BCF%5D%20Thegidi%202014%20Tamil%201080p%20HQ%20HDRip%20X265%20HEVC%20AAC%20950MB.mkv"},
-    {name:"Premalu (2024)",resolution:"1080p",src:"https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f8fd50e33b661f355258e8/%40CSZMovies%20-%20-%20Premalu%20%282024%29%20Tamil%20HQ%20HDRip%20-%201080p%20-%20x264%20.mkv"},
-    {name:"The Roses (2025)",resolution:"1080p",src:"https://authorized-jokes-tackle-earliest.trycloudflare.com/dl/68f9b479bccfa98b0c2fe154/The%20Roses%20%282025%29%20DS4K%20%28AMZN%201080p%20WEBRip%2010bit%20English%20DDP5..mkv"},
-    {name:"Oppenheimer (2023)",resolution:"1080p",src:"https://authorized-jokes-tackle-earliest.trycloudflare.com/dl/68f9b4cebccfa98b0c2fe155/Oppenheimer%20%282023%29%20BluRay%20-%201080p%20-%20x264%20-%20%5BTel%20%2B%20Eng%5D%20-.mkv"},
-    {name:"Coolie (2025)",resolution:"1080p",src:"https://authorized-jokes-tackle-earliest.trycloudflare.com/dl/68f9b4dfbccfa98b0c2fe156/Coolie.2025.Tamil.HQ.HDRip.1080p.HEVCx265.DD%2B5.1.192.mkv"}
-  ];
-  let filtered=[...base];
+      gateBtn.addEventListener("click", tryUnlock);
+      gateInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") tryUnlock();
+      });
 
-  function playSource(item){
-    plyr.source={type:'video',sources:[{src:item.src,type:'video/mp4'}]};
-    emptyState.style.display='none';
-    plyr.play();
-  }
+      function tryUnlock() {
+        const code = (gateInput.value || "").trim();
+        if (validCodes.has(code)) {
+          gate.classList.remove("show");
+          mainWrap.style.display = "block"; // Reveal main content
+          splash.style.display = "none"; // Hide splash
+          gate.style.display = "none"; // Hide gate
+        } else gateErr.textContent = "Invalid invite code.";
+      }
 
-  function renderTop5(items){
-    top5.innerHTML='';
-    items.slice(0,5).forEach(item=>{
-      const t=document.createElement('div');
-      t.className='tcard';
-      t.textContent=`${item.name}`;
-      t.onclick=()=>playSource(item);
-      top5.appendChild(t);
+      const base = [
+        {
+          name: "The Smile Man (2024)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f8fdabe33b661f355258e9/The%20Smile%20Man%202024%20Tamil%20TRUE%20WEB-DL%20-%201080p%20-%20AVC%20-%20DD%2B5.1%20.mkv",
+        },
+        {
+          name: "Kannagi (2023)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f8fefbe33b661f355258ec/%5BKC%5D%20Kannagi%202023%201080p%20AMZN%20WEB%20DL%20HEVC%20DDP5%201%20640k-DDH.mkv",
+        },
+        {
+          name: "The Killer (2023)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f90191e33b661f355258ee/%40WITHa4.The.Killer.2023.1080p.mWa4.x264.NF.WEBRip.1400MB.DDP.mkv",
+        },
+        {
+          name: "Por Thozhil (2023)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f901cfe33b661f355258ef/Por.Thozhil.2023.Tamil.1080p.10bit.SONY.2CH.HEVC.ESub-ALB.mkv",
+        },
+        {
+          name: "Ponman (2025)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f902d7e33b661f355258f1/Ponman%202025%20Tamil%20HQ%20HDRip%20-%201080p%20-%20HEVC%20-%20DD%2B5.1%20-%20192Kbps.mkv",
+        },
+        {
+          name: "Diary (2022)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f8fc6ee33b661f355258e3/Diary.2022.Tamil.1080p.10bit.AHA.6CH.Esub-ALB.mkv",
+        },
+        {
+          name: "Thegidi (2014)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f8fce8e33b661f355258e6/%5BCF%5D%20Thegidi%202014%20Tamil%201080p%20HQ%20HDRip%20X265%20HEVC%20AAC%20950MB.mkv",
+        },
+        {
+          name: "Premalu (2024)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f8fd50e33b661f355258e8/%40CSZMovies%20-%20-%20Premalu%20%282024%29%20Tamil%20HQ%20HDRip%20-%201080p%20-%20x264%20.mkv",
+        },
+        {
+          name: "The Roses (2025)",
+          resolution: "1080p",
+          src: "https://authorized-jokes-tackle-earliest.trycloudflare.com/dl/68f9b479bccfa98b0c2fe154/The%20Roses%20%282025%29%20DS4K%20%28AMZN%201080p%20WEBRip%2010bit%20English%20DDP5..mkv",
+        },
+        {
+          name: "Oppenheimer (2023)",
+          resolution: "1080p",
+          src: "https://authorized-jokes-tackle-earliest.trycloudflare.com/dl/68f9b4cebccfa98b0c2fe155/Oppenheimer%20%282023%29%20BluRay%20-%201080p%20-%20x264%20-%20%5BTel%20%2B%20Eng%5D%20-.mkv",
+        },
+        {
+          name: "Coolie (2025)",
+          resolution: "1080p",
+          src: "https://authorized-jokes-tackle-earliest.trycloudflare.com/dl/68f9b4dfbccfa98b0c2fe156/Coolie.2025.Tamil.HQ.HDRip.1080p.HEVCx265.DD%2B5.1.192.mkv",
+        },
+        {
+          name: "C V Master (2021)",
+          resolution: "720p",
+          src: "https://tgfilestreambot.koyeb.app/dl/68cbb90688255ba08cccd8cf/@C_V%20Master%20(2021)%20Tamil%20HDRip.mkv",
+        },
+        {
+          name: "DON (2022)",
+          resolution: "720p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68ce84e63bd34c09fff97183",
+        },
+        {
+          name: "Bigil (2019)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68cee2ff3bd34c09fff971a1",
+        },
+        {
+          name: "Petta (2019)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68e2228d4e8ca7bd7aa3ca09",
+        },
+        {
+          name: "Thuppakki (2012)",
+          resolution: "720p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68e93d0756eb9390e470a0b3",
+        },
+        {
+          name: "Remo (2016)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68ea8b7856eb9390e470a24d",
+        },
+        {
+          name: "Varalaru (2006)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f21ea056eb9390e470a8bd",
+        },
+        {
+          name: "Spider-Man (2002)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f3adb86261c3ba5dd98ef8",
+        },
+        {
+          name: "Spider-Man 2 (2004)",
+          resolution: "1080p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f4bc7b6261c3ba5dd98ff0",
+        },
+        {
+          name: "Kantara (2022)",
+          resolution: "720p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f88293e33b661f35525832/Kantara%202022%20HQ%20HDRip%20720p%20x264%20DD%2B5.1%20192Kbps%20Tam%20%2B%20Tel%20%2B%20K.mkv",
+        },
+        {
+          name: "John Luther (2022)",
+          resolution: "720p",
+          src: "https://tgfilestreambot.koyeb.app/dl/68cbb93588255ba08cccd8d1/_John_Luther_2022_Tamil_HQ_HDRip_720p_HEVC_DD+5_1_384Kbps_&_AAC.mkv",
+        },
+        {
+          name: "Paappan (2023)",
+          resolution: "HDRip",
+          src: "https://tgfilestreambot.koyeb.app/dl/68cbf1a988255ba08cccd8f0/@Team_HDT%20-%20Paappan%20(2023)%20HDRip%20Tamil.mkv",
+        },
+        {
+          name: "Anweshippin Kandethum (2024)",
+          resolution: "HQ HDRip",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68d23b743bd34c09fff9783a",
+        },
+        {
+          name: "Identity (2003)",
+          resolution: "720p",
+          src: "https://compressed-estimates-cardiff-class.trycloudflare.com/dl/68f7280d6261c3ba5dd9a143",
+        }
+      ];
+
+      let filtered = [...base];
+
+      function playSource(item) {
+        plyr.source = { type: "video", sources: [{ src: item.src, type: "video/mp4" }] };
+        emptyState.style.display = "none";
+        plyr.play();
+      }
+
+      function renderTop5(items) {
+        top5.innerHTML = "";
+        items.slice(0, 5).forEach((item) => {
+          const t = document.createElement("div");
+          t.className = "tcard";
+          t.textContent = `${item.name}`;
+          t.onclick = () => playSource(item);
+          top5.appendChild(t);
+        });
+      }
+
+      function renderCards(items) {
+        cards.innerHTML = "";
+        items.forEach((item) => {
+          const el = document.createElement("div");
+          el.className = "card";
+          el.textContent = `${item.name}`;
+          el.onclick = () => playSource(item);
+          cards.appendChild(el);
+        });
+      }
+
+      function refresh() {
+        renderTop5(filtered);
+        renderCards(filtered);
+      }
+
+      searchBox.addEventListener("input", () => {
+        const s = searchBox.value.trim().toLowerCase();
+        filtered = !s ? [...base] : base.filter((x) => x.name.toLowerCase().includes(s));
+        refresh();
+      });
+
+      refresh();
     });
-  }
-
-  function renderCards(items){
-    cards.innerHTML='';
-    items.forEach(item=>{
-      const el=document.createElement('div');
-      el.className='card';
-      el.textContent=`${item.name}`;
-      el.onclick=()=>playSource(item);
-      cards.appendChild(el);
-    });
-  }
-
-  function refresh(){
-    renderTop5(filtered);
-    renderCards(filtered);
-  }
-
-  searchBox.addEventListener('input',()=>{
-    const s=searchBox.value.trim().toLowerCase();
-    filtered=!s?[...base]:base.filter(x=>x.name.toLowerCase().includes(s));
-    refresh();
-  });
-
-  refresh();
-});
-</script>
+  </script>
 </body>
 </html>
